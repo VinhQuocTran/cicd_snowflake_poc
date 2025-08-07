@@ -36,9 +36,10 @@ phases:
 
       - echo "Executing SnowSQL CLI installer..."
       # Set SNOWSQL_DEST as an environment variable for the bash command
-      - SNOWSQL_DEST=./snowsql_install bash "${SNOWSQL_INSTALLER_FILENAME}" -y
+      - export SNOWSQL_DEST=./snowsql_install
+      - export SNOWSQL_LOGIN_SHELL=/dev/null
+      - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
 
-      - export PATH=$PATH:./snowsql_install/bin
       - echo "SnowSQL CLI installed."
 
   build:
