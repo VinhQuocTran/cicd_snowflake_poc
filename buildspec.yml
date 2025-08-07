@@ -48,14 +48,15 @@ phases:
     commands:      
       - echo "Starting Snowflake Git Stage Refresh..."
 
-      - echo "$PRIVATE_KEY_CONTENT_VAR" > /tmp/snowflake_private_key.p8
-      - chmod 400 /tmp/snowflake_private_key.p8
+      - echo "$PRIVATE_KEY_CONTENT_VAR" > ./aes_private_key.p8
+      - chmod 400 ./aes_private_key.p8
       - export SNOWSQL_PRIVATE_KEY_PASSPHRASE=$PRIVATE_KEY_PASSPHRASE_VAR
-      - echo /tmp/snowflake_private_key.p8
+      
+      - echo ./aes_private_key.p8
       - echo $PRIVATE_KEY_CONTENT_VAR
       - echo $SNOWSQL_PRIVATE_KEY_PASSPHRASE
 
-      # - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path /tmp/snowflake_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path ./aes_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
 
       # - echo "Snowflake Git Stage Refresh completed."
 
