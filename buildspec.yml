@@ -16,7 +16,7 @@ env:
   # with the EXACT names as they appear in AWS Secrets Manager.
   # If your secret 'my_cicd_key_secret' contains both keys:
   secrets-manager:
-    PRIVATE_KEY_CONTENT_VAR: "my_cicd_key_secret:PRIVATE_KEY_CONTENT"
+    PRIVATE_KEY_CONTENT_VAR: "aes_private_key"
     PRIVATE_KEY_PASSPHRASE_VAR: "my_cicd_key_secret:PRIVATE_KEY_PASSPHRASE"
 
 phases:
