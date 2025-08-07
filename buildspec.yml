@@ -51,7 +51,7 @@ phases:
   build:
     commands:
       - set -eux
-      - export PATH=$PATH:./snowsql_install/bin
+      # - export PATH=$PATH:./snowsql_install/bin
       - printenv
       
       - echo "Starting Snowflake Git Stage Refresh..."
