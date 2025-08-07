@@ -45,17 +45,18 @@ phases:
       - export SNOWSQL_LOGIN_SHELL=/dev/null
       - ls -a
       - bash snowsql-1.2.32-linux_x86_64.bash -y
-      - cd ./snowsql_install/snowsql
       - ls -a
 
       # - SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.32-linux_x86_64.bash
       # - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
       
-      - export PATH=$PATH:./snowsql_install/snowsql/bin
-      - ls -a 
+      - export PATH=$PATH:./snowsql_install
+      # - cd ./snowsql_install/snowsql
+      # - ls -a 
       # - export PATH=$PATH:/home/snowflake/snowsql/bin
       - echo "SnowSQL CLI installed."
       - echo -e ${PATH//:/\\n}
+      - snowsql -v
 
 
   # build:
