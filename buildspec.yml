@@ -1,0 +1,59 @@
+# buildspec.yml
+version: 0.2
+
+env:
+  variables:
+    SNOWFLAKE_ACCOUNT: "YWCMEWI-NQ94599" # e.g., 'xyz12345.us-east-1' or 'xyz12345'
+    SNOWFLAKE_USER: "VINHQUOC2049" # The dedicated Snowflake user configured with the public key
+    SNOWFLAKE_ROLE: "ACCOUNTADMIN" # Role with permissions to ALTER STAGE
+    SNOWFLAKE_WAREHOUSE: "COMPUTE_WH" # Warehouse for the connection
+    SNOWFLAKE_DATABASE: "OPERATION"
+    SNOWFLAKE_SCHEMA: "PUBLIC"
+    SNOWFLAKE_GIT_STAGE: "OPERATION.SAC_MONITORING.SAC_GIT_REPO" # The fully qualified name of your Git integration stage
+
+  # --- SECURELY RETRIEVE PRIVATE KEY AND PASSPHRASE FROM SECRETS MANAGER ---
+  # Now, we reference the SINGLE secret 'my_cicd_key_secret'
+  # and then specify the exact key name within that secret after the colon.
+  secrets-manager:
+    # This variable will hold the content of your private key.
+    # It references the secret 'my_cicd_key_secret' and the key 'PRIVATE_KEY_CONTENT' within it.
+    PRIVATE_KEY_CONTENT_VAR: "my_cicd_key_secret:PRIVATE_KEY_CONTENT"
+
+    # This variable will hold your private key's passphrase.
+    # It references the secret 'my_cicd_key_secret' and the key 'PRIVATE_KEY_PASSPHRASE' within it.
+    PRIVATE_KEY_PASSPHRASE_VAR: "my_cicd_key_secret:PRIVATE_KEY_PASSPHRASE"
+
+phases:
+  install:
+    commands:
+      - echo "Installing SnowSQL CLI..."
+      - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_64/snowsql-1.2.22-linux_x86_64.bash
+      - SNOWSQL_DEST=./snowsql_install bash snowsql-1.2.22-linux_x86_64.bash -y
+      - export PATH=$PATH:./snowsql_install/bin
+      - echo "SnowSQL CLI installed."
+
+  build:
+    commands:
+      - echo "Starting Snowflake Git Stage Refresh..."
+
+      # --- Prepare Private Key File ---
+      # Use the variable that now holds the content from Secrets Manager.
+      - echo "$PRIVATE_KEY_CONTENT_VAR" > /tmp/snowflake_private_key.p8
+      - chmod 400 /tmp/snowflake_private_key.p8
+
+      # --- Set Private Key Passphrase Environment Variable ---
+      # Use the variable that now holds the passphrase from Secrets Manager.
+      - export SNOWSQL_PRIVATE_KEY_PASSPHRASE="$PRIVATE_KEY_PASSPHRASE_VAR"
+
+      # --- Execute SnowSQL Command to Refresh Git Stage ---
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -o exit_on_error=true -q -i /tmp/snowflake_private_key.p8 <<< "alter git repository $SNOWFLAKE_GIT_STAGE fetch;"
+
+      - echo "Snowflake Git Stage Refresh completed."
+
+      # --- Clean Up Private Key File ---
+      - rm /tmp/snowflake_private_key.p8
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
