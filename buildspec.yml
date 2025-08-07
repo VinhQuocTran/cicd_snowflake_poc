@@ -43,9 +43,19 @@ phases:
       - export PATH=$PATH:./snowsql_install/bin
       - echo "SnowSQL CLI installed."
 
+      - echo "--- Environment variables after install phase ---"
+      - env # Dumps all environment variables
+      - echo "-------------------------------------------------"
+
   build:
     commands:
       - set -eux
+      - export PATH=$PATH:./snowsql_install/bin
+      - echo "PATH at start of build phase: $PATH"
+      - echo "--- Environment variables after install phase ---"
+      - env # Dumps all environment variables
+      - echo "-------------------------------------------------"
+      
       - echo "Starting Snowflake Git Stage Refresh..."
 
       # Write the private key content (retrieved from Secrets Manager) to a temporary file.
