@@ -34,7 +34,7 @@ phases:
       # - SNOWSQL_INSTALLER_FILENAME="snowsql-installer.bash"
       # - curl -fL -o "${SNOWSQL_INSTALLER_FILENAME}" "${SNOWSQL_INSTALLER_URL}"
 
-      - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash
+      - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.4/linux_x86_64/snowsql-1.4.3-linux_x86_64.bash
 
       - echo "Making installer executable..."
       # - chmod +x "${SNOWSQL_INSTALLER_FILENAME}"
@@ -44,13 +44,15 @@ phases:
       - export SNOWSQL_DEST=./snowsql_install
       - export SNOWSQL_LOGIN_SHELL=/dev/null
       - ls -a
-      - bash snowsql-1.2.32-linux_x86_64.bash -y
+      - bash snowsql-1.4.3-linux_x86_64.bash -y
       - ls -a
 
       # - SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.32-linux_x86_64.bash
       # - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
       
       - export PATH=$PATH:./snowsql_install
+
+      - chmod +x ./snowsql_install/snowsql
       # - cd ./snowsql_install/snowsql
       # - ls -a 
       # - export PATH=$PATH:/home/snowflake/snowsql/bin
