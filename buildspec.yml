@@ -40,8 +40,10 @@ phases:
       - export SNOWSQL_LOGIN_SHELL=/dev/null
       - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
       
-      - export PATH=$PATH:./snowsql_install/bin
+      # - export PATH=$PATH:./snowsql_install/bin
+      - export PATH="$HOME/snowsql_install/bin:$PATH"
       - echo "SnowSQL CLI installed."
+      - echo -e ${PATH//:/\\n}
 
       - printenv
       - echo $SNOWFLAKE_ACCOUNT
