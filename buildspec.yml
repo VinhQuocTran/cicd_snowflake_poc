@@ -44,6 +44,7 @@ phases:
       - echo "SnowSQL CLI installed."
 
       - printenv
+      - echo $SNOWFLAKE_ACCOUNT
 
   build:
     commands:
