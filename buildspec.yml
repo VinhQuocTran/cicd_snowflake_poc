@@ -43,18 +43,13 @@ phases:
       - export PATH=$PATH:./snowsql_install/bin
       - echo "SnowSQL CLI installed."
 
-      - echo "--- Environment variables after install phase ---"
-      - env # Dumps all environment variables
-      - echo "-------------------------------------------------"
+      - printenv
 
   build:
     commands:
       - set -eux
       - export PATH=$PATH:./snowsql_install/bin
-      - echo "PATH at start of build phase: $PATH"
-      - echo "--- Environment variables after install phase ---"
-      - env # Dumps all environment variables
-      - echo "-------------------------------------------------"
+      - printenv
       
       - echo "Starting Snowflake Git Stage Refresh..."
 
