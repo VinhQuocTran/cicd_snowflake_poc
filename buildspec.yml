@@ -23,6 +23,7 @@ phases:
   install:
     commands:
       # Enable verbose output and exit immediately on error for debugging
+      - cd
       - pwd
       - ls -a 
       - mkdir /home/snowflake
