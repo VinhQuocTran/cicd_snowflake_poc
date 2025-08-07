@@ -23,7 +23,8 @@ phases:
   install:
     commands:
       # Enable verbose output and exit immediately on error for debugging
-      - set -eux
+      - mkdir /home/snowflake
+      - WORKDIR /home/snowflake
 
       - echo "Downloading SnowSQL CLI installer..."
       # Using the specific version 1.2.32 as per your previous log.
@@ -38,13 +39,16 @@ phases:
 
       - echo "Executing SnowSQL CLI installer..."
       # Set SNOWSQL_DEST as an environment variable for the bash command
-      # - export SNOWSQL_DEST=~/bin
-      # - export SNOWSQL_LOGIN_SHELL=~/.profile
-      - SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.32-linux_x86_64.bash
+      - export SNOWSQL_DEST=/home/snowflake
+      - export SNOWSQL_LOGIN_SHELL=/home/snowflake/.bashrc
+      - bash snowsql-1.2.32-linux_x86_64.bash
+
+      # - SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.32-linux_x86_64.bash
       # - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
       
       # - export PATH=$PATH:./snowsql_install/bin
-      # - export PATH=$PATH:/opt/snowsql/bin
+      - ls /home/snowflake
+      - export PATH=$PATH:/home/snowflake/snowsql/bin
       - echo "SnowSQL CLI installed."
       - echo -e ${PATH//:/\\n}
 
