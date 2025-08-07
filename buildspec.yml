@@ -56,7 +56,7 @@ phases:
       - export SNOWSQL_PRIVATE_KEY_PASSPHRASE="$PRIVATE_KEY_PASSPHRASE_VAR"
 
       # Execute SnowSQL command to refresh the Git stage.
-      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path /tmp/snowflake_private_key.p8 <<< "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path /tmp/snowflake_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
 
       - echo "Snowflake Git Stage Refresh completed."
 
