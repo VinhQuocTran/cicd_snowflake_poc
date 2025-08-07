@@ -45,6 +45,8 @@ phases:
       - export SNOWSQL_LOGIN_SHELL=/dev/null
       - ls -a
       - bash snowsql-1.2.32-linux_x86_64.bash -y
+      - cd ./snowsql_install
+      - ls -a
 
       # - SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.32-linux_x86_64.bash
       # - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
@@ -55,32 +57,30 @@ phases:
       - echo "SnowSQL CLI installed."
       - echo -e ${PATH//:/\\n}
 
-      - printenv
-      - echo $SNOWFLAKE_ACCOUNT
 
-  build:
-    commands:
-      - set -eux
-      # - export PATH=$PATH:./snowsql_install/bin
-      - printenv
+  # build:
+  #   commands:
+  #     - set -eux
+  #     # - export PATH=$PATH:./snowsql_install/bin
+  #     - printenv
       
-      - echo "Starting Snowflake Git Stage Refresh..."
+  #     - echo "Starting Snowflake Git Stage Refresh..."
 
-      # Write the private key content (retrieved from Secrets Manager) to a temporary file.
-      - echo "$PRIVATE_KEY_CONTENT_VAR" > /tmp/snowflake_private_key.p8
-      # Set strict permissions for the private key file (read-only for owner).
-      - chmod 400 /tmp/snowflake_private_key.p8
+  #     # Write the private key content (retrieved from Secrets Manager) to a temporary file.
+  #     - echo "$PRIVATE_KEY_CONTENT_VAR" > /tmp/snowflake_private_key.p8
+  #     # Set strict permissions for the private key file (read-only for owner).
+  #     - chmod 400 /tmp/snowflake_private_key.p8
 
-      # Set the passphrase as an environment variable for SnowSQL.
-      - export SNOWSQL_PRIVATE_KEY_PASSPHRASE="$PRIVATE_KEY_PASSPHRASE_VAR"
+  #     # Set the passphrase as an environment variable for SnowSQL.
+  #     - export SNOWSQL_PRIVATE_KEY_PASSPHRASE="$PRIVATE_KEY_PASSPHRASE_VAR"
 
-      # Execute SnowSQL command to refresh the Git stage.
-      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path /tmp/snowflake_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
+  #     # Execute SnowSQL command to refresh the Git stage.
+  #     - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path /tmp/snowflake_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
 
-      - echo "Snowflake Git Stage Refresh completed."
+  #     - echo "Snowflake Git Stage Refresh completed."
 
-      # Clean up the private key file from the build environment for security.
-      - rm /tmp/snowflake_private_key.p8
+  #     # Clean up the private key file from the build environment for security.
+  #     - rm /tmp/snowflake_private_key.p8
 
 artifacts:
   files:
