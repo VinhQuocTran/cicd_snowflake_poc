@@ -11,19 +11,19 @@ databaseChangeLog:
       path: 04_table/
       relativeToChangelogFile: true
       errorIfMissingOrEmpty: false
-  # - includeAll:
-  #     path: 04_stage/
-  #     relativeToChangelogFile: true
-  #     errorIfMissingOrEmpty: false
-  # - includeAll:
-  #     path: 05_store_proc/
-  #     relativeToChangelogFile: true
-  #     errorIfMissingOrEmpty: false
-  # - includeAll:
-  #     path: 06_task/
-  #     relativeToChangelogFile: true
-  #     errorIfMissingOrEmpty: false
-  # - includeAll:
-  #     path: 07_stream/
-  #     relativeToChangelogFile: true
-  #     errorIfMissingOrEmpty: false
+  - includeAll:
+      path: 05_stage/
+      relativeToChangelogFile: true
+      errorIfMissingOrEmpty: false
+  - includeAll:
+      path: 06_store_proc/
+      relativeToChangelogFile: true
+      errorIfMissingOrEmpty: false
+  - includeAll:
+      path: 07_task/
+      relativeToChangelogFile: true
+      errorIfMissingOrEmpty: false
+  - includeAll:
+      path: 08_stream/
+      relativeToChangelogFile: true
+      errorIfMissingOrEmpty: false
