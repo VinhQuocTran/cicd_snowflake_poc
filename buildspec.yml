@@ -42,7 +42,7 @@ phases:
       - echo "Executing SnowSQL CLI installer..."
       # Set SNOWSQL_DEST as an environment variable for the bash command
       - export SNOWSQL_DEST=./snowsql_install
-      - export SNOWSQL_LOGIN_SHELL=./snowsql_install/.bashrc
+      - export SNOWSQL_LOGIN_SHELL=~/.profile
       - ls -a
       - bash snowsql-1.2.32-linux_x86_64.bash
 
@@ -50,8 +50,8 @@ phases:
       # - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
       
       - export PATH=$PATH:./snowsql_install/bin
-      - ls /home/snowflake
-      - export PATH=$PATH:/home/snowflake/snowsql/bin
+      - ls -a 
+      # - export PATH=$PATH:/home/snowflake/snowsql/bin
       - echo "SnowSQL CLI installed."
       - echo -e ${PATH//:/\\n}
 
