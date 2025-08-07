@@ -28,7 +28,7 @@ phases:
     commands:
       - echo "Installing SnowSQL CLI..."
       - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash
-      - SNOWSQL_DEST=./snowsql-1.2.32-linux_x86_64.bash -y
+      - SNOWSQL_DEST=./snowsql_install bash snowsql-1.2.32-linux_x86_64.bash -y
       - export PATH=$PATH:./snowsql_install/bin
       - echo "SnowSQL CLI installed."
 
