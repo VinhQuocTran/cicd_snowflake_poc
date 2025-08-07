@@ -39,7 +39,8 @@ phases:
       - export SNOWSQL_DEST=./snowsql_install
       - export SNOWSQL_LOGIN_SHELL=/dev/null
       - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
-
+      
+      - export PATH=$PATH:./snowsql_install/bin
       - echo "SnowSQL CLI installed."
 
   build:
