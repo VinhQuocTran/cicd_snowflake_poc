@@ -25,7 +25,6 @@ phases:
       # Enable verbose output and exit immediately on error for debugging
       - cd
       - pwd
-      - ls -a 
 
       - echo "Downloading SnowSQL CLI installer..."
       - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.4/linux_x86_64/snowsql-1.4.3-linux_x86_64.bash
@@ -42,6 +41,7 @@ phases:
       - echo "SnowSQL CLI installed."
       - echo -e ${PATH//:/\\n}
       - snowsql -v
+      - ls -a 
 
 
   build:
