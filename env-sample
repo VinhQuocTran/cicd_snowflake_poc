@@ -1,0 +1,8 @@
+SNOWFLAKE_ACCOUNT="placeholder"
+SNOWFLAKE_USER="placeholder"
+ROLE="placeholder"
+WAREHOUSE="placeholder"
+DATABASE="placeholder"
+SCHEMA="placeholder"
+PRIVATE_KEY_PASSWORD="placeholder"
+TOKEN="placeholder"
