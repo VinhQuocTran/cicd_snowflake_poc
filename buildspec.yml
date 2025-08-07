@@ -27,21 +27,24 @@ phases:
 
       - echo "Downloading SnowSQL CLI installer..."
       # Using the specific version 1.2.32 as per your previous log.
-      - SNOWSQL_INSTALLER_URL="https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash"
-      - SNOWSQL_INSTALLER_FILENAME="snowsql-installer.bash"
-      - curl -fL -o "${SNOWSQL_INSTALLER_FILENAME}" "${SNOWSQL_INSTALLER_URL}"
+      # - SNOWSQL_INSTALLER_URL="https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash"
+      # - SNOWSQL_INSTALLER_FILENAME="snowsql-installer.bash"
+      # - curl -fL -o "${SNOWSQL_INSTALLER_FILENAME}" "${SNOWSQL_INSTALLER_URL}"
+
+      - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash
 
       - echo "Making installer executable..."
-      - chmod +x "${SNOWSQL_INSTALLER_FILENAME}"
+      # - chmod +x "${SNOWSQL_INSTALLER_FILENAME}"
 
       - echo "Executing SnowSQL CLI installer..."
       # Set SNOWSQL_DEST as an environment variable for the bash command
-      - export SNOWSQL_DEST=./snowsql_install
-      - export SNOWSQL_LOGIN_SHELL=/dev/null
-      - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
+      # - export SNOWSQL_DEST=~/bin
+      # - export SNOWSQL_LOGIN_SHELL=~/.profile
+      - SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.32-linux_x86_64.bash
+      # - bash "${SNOWSQL_INSTALLER_FILENAME}" -y
       
       # - export PATH=$PATH:./snowsql_install/bin
-      - export PATH="$HOME/snowsql_install/bin:$PATH"
+      # - export PATH=$PATH:/opt/snowsql/bin
       - echo "SnowSQL CLI installed."
       - echo -e ${PATH//:/\\n}
 
