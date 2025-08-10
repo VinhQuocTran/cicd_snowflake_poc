@@ -23,23 +23,23 @@ phases:
   install:
     commands:
       # Enable verbose output and exit immediately on error for debugging
-      - echo "*****Step $STEP_NUM: Downloading SnowSQL CLI installer...*****"
+      - echo "*****Step $STEP_NUM - Downloading SnowSQL CLI installer...*****"
       - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.4/linux_x86_64/snowsql-1.4.3-linux_x86_64.bash
-      - echo "Step $STEP_NUM: succeeded"
+      - echo "Step $STEP_NUM - succeeded"
       - STEP_NUM=$((STEP_NUM + 1)) # Increment for the next logical step within this phase or next phase
 
-      - echo "*****Step $STEP_NUM: Installing SnowSQL...*****"
+      - echo "*****Step $STEP_NUM - Installing SnowSQL...*****"
       - export SNOWSQL_DEST=./snowsql_install
       - export SNOWSQL_LOGIN_SHELL=/dev/null
       - echo "Executing SnowSQL CLI installer"
       - bash snowsql-1.4.3-linux_x86_64.bash -y
-      - echo "Step $STEP_NUM: succeeded"
+      - echo "Step $STEP_NUM - succeeded"
       - STEP_NUM=$((STEP_NUM + 1)) # Increment for the next logical step
 
-      - echo "*****Step $STEP_NUM: Add SnowSQL to path*****"
+      - echo "*****Step $STEP_NUM - Add SnowSQL to path*****"
       - export PATH=$PATH:./snowsql_install
       - chmod +x ./snowsql_install/snowsql
-      - echo "Step $STEP_NUM: succeeded"
+      - echo "Step $STEP_NUM - succeeded"
       - STEP_NUM=$((STEP_NUM + 1)) # Increment for the next phase (build)
 
     # Export the final STEP_NUM value from the install phase so it's available in the 'build' phase
@@ -48,7 +48,7 @@ phases:
 
   build:
     commands:
-      - echo "*****Step $STEP_NUM: Starting Snowflake Git Stage Refresh...*****" # Will use the incremented value from install phase
+      - echo "*****Step $STEP_NUM - Starting Snowflake Git Stage Refresh...*****" # Will use the incremented value from install phase
 
       - echo "$PRIVATE_KEY_CONTENT_VAR" > ./aes_private_key.p8
       - chmod 400 ./aes_private_key.p8
@@ -59,7 +59,7 @@ phases:
       - echo "Private Key Passphrase (first 5 chars): ${SNOWSQL_PRIVATE_KEY_PASSPHRASE:0:5}..."
 
       - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path ./aes_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
-      - echo "Step $STEP_NUM: Snowflake Git Stage Refresh completed."
+      - echo "Step $STEP_NUM - Snowflake Git Stage Refresh completed."
       - STEP_NUM=$((STEP_NUM + 1)) # Increment for any subsequent phases or for final log
       
     # Export STEP_NUM if you have a 'post_build' phase that needs it
