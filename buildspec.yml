@@ -54,10 +54,6 @@ phases:
       - chmod 400 ./aes_private_key.p8
       - export SNOWSQL_PRIVATE_KEY_PASSPHRASE=123 # This value should ideally come from Secrets Manager like PRIVATE_KEY_CONTENT_VAR
 
-      - echo "Private Key Path: ./aes_private_key.p8"
-      - echo "Private Key Content (first 10 chars): ${PRIVATE_KEY_CONTENT_VAR:0:10}..."
-      - echo "Private Key Passphrase (first 5 chars): ${SNOWSQL_PRIVATE_KEY_PASSPHRASE:0:5}..."
-
       - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path ./aes_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
       - echo "Step $STEP_NUM - Snowflake Git Stage Refresh completed."
       - STEP_NUM=$((STEP_NUM + 1)) # Increment for any subsequent phases or for final log
