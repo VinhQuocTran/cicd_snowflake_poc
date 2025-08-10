@@ -1,4 +1,3 @@
-# buildspec.yml
 version: 0.2
 
 env:
@@ -10,6 +9,7 @@ env:
     SNOWFLAKE_DATABASE: "OPERATION"
     SNOWFLAKE_SCHEMA: "PUBLIC"
     SNOWFLAKE_GIT_STAGE: "OPERATION.SAC_MONITORING.SAC_GIT_REPO"
+    STEP_NUM: 1 # Initialize STEP_NUM at the start of the build
 
   # --- SECURELY RETRIEVE PRIVATE KEY AND PASSPHRASE FROM SECRETS MANAGER ---
   # IMPORTANT: Replace 'your-secrets-manager-secret-name-for-private-key' and 'your-json-key-name-for-private-key'
@@ -17,50 +17,54 @@ env:
   # If your secret 'my_cicd_key_secret' contains both keys:
   secrets-manager:
     PRIVATE_KEY_CONTENT_VAR: "aes_private_key"
-    PRIVATE_KEY_PASSPHRASE_VAR: "my_cicd_key_secret:PRIVATE_KEY_PASSPHRASE"
+    PRIVATE_KEY_PASSPHRASE_VAR: "my_cicd_key_secret:PRIVATE_KEY_PASSPHRASE" # Assuming 'aes_private_key' is the secret name and 'PRIVATE_KEY_PASSPHRASE' is a key within its JSON value
 
 phases:
   install:
     commands:
       # Enable verbose output and exit immediately on error for debugging
-      - cd
-      - pwd
-
-      - echo "Downloading SnowSQL CLI installer..."
+      - echo "*****Step $STEP_NUM: Downloading SnowSQL CLI installer...*****"
       - curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.4/linux_x86_64/snowsql-1.4.3-linux_x86_64.bash
+      - echo "Step $STEP_NUM: succeeded"
+      - STEP_NUM=$((STEP_NUM + 1)) # Increment for the next logical step within this phase or next phase
 
-      - echo "Making installer executable..."
-      - echo "Executing SnowSQL CLI installer..."
+      - echo "*****Step $STEP_NUM: Installing SnowSQL...*****"
       - export SNOWSQL_DEST=./snowsql_install
       - export SNOWSQL_LOGIN_SHELL=/dev/null
+      - echo "Executing SnowSQL CLI installer"
       - bash snowsql-1.4.3-linux_x86_64.bash -y
+      - echo "Step $STEP_NUM: succeeded"
+      - STEP_NUM=$((STEP_NUM + 1)) # Increment for the next logical step
 
-
+      - echo "*****Step $STEP_NUM: Add SnowSQL to path*****"
       - export PATH=$PATH:./snowsql_install
       - chmod +x ./snowsql_install/snowsql
-      - echo "SnowSQL CLI installed."
-      - echo -e ${PATH//:/\\n}
-      - snowsql -v
-      - ls -a 
+      - echo "Step $STEP_NUM: succeeded"
+      - STEP_NUM=$((STEP_NUM + 1)) # Increment for the next phase (build)
 
+    # Export the final STEP_NUM value from the install phase so it's available in the 'build' phase
+    exported-variables:
+      - STEP_NUM
 
   build:
-    commands:      
-      - echo "Starting Snowflake Git Stage Refresh..."
+    commands:
+      - echo "*****Step $STEP_NUM: Starting Snowflake Git Stage Refresh...*****" # Will use the incremented value from install phase
 
       - echo "$PRIVATE_KEY_CONTENT_VAR" > ./aes_private_key.p8
       - chmod 400 ./aes_private_key.p8
-      - export SNOWSQL_PRIVATE_KEY_PASSPHRASE=123
+      - export SNOWSQL_PRIVATE_KEY_PASSPHRASE=123 # This value should ideally come from Secrets Manager like PRIVATE_KEY_CONTENT_VAR
 
-      - echo ./aes_private_key.p8
-      - echo $PRIVATE_KEY_CONTENT_VAR
-      - echo $SNOWSQL_PRIVATE_KEY_PASSPHRASE
+      - echo "Private Key Path: ./aes_private_key.p8"
+      - echo "Private Key Content (first 10 chars): ${PRIVATE_KEY_CONTENT_VAR:0:10}..."
+      - echo "Private Key Passphrase (first 5 chars): ${SNOWSQL_PRIVATE_KEY_PASSPHRASE:0:5}..."
 
       - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA --private-key-path ./aes_private_key.p8 -q "ALTER GIT REPOSITORY $SNOWFLAKE_GIT_STAGE FETCH;"
-
-      # - echo "Snowflake Git Stage Refresh completed."
-
-      # - rm /tmp/snowflake_private_key.p8
+      - echo "Step $STEP_NUM: Snowflake Git Stage Refresh completed."
+      - STEP_NUM=$((STEP_NUM + 1)) # Increment for any subsequent phases or for final log
+      
+    # Export STEP_NUM if you have a 'post_build' phase that needs it
+    exported-variables:
+      - STEP_NUM
 
 artifacts:
   files:
